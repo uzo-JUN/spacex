@@ -351,7 +351,7 @@ const WithdrawalPlan = () => {
                 >
                   <div className="flex items-center justify-center gap-1 sm:gap-2">
                     <Gift className="w-3 h-3 sm:w-4 sm:h-4" />
-                    <span className="text-xs sm:text-sm">I Have My Apple Gift Cards</span>
+                    <span className="text-xs sm:text-sm"> Apple Gift Cards Received, Continue!</span>
                   </div>
                 </Button>
               </div>
